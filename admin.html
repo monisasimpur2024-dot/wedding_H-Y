@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Wedding Hestiantina & Yuda</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:#f5f1ea;color:#2d2a26;padding:30px 20px;min-height:100vh}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-family:'Playfair Display',serif;font-size:2rem;color:#4d5a52}
+.sub{color:#7a746c;margin-bottom:2rem}
+.hidden{display:none!important}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.tab{padding:10px 20px;border-radius:999px;border:1px solid #c9a961;background:rgba(255,255,255,.7);font-size:.82rem;color:#7a746c;cursor:pointer;transition:.25s}
+.tab.active{background:#7a8c7e;color:#f5f1ea;border-color:#7a8c7e}
+.panel{display:none;background:#fff;border-radius:16px;padding:26px;box-shadow:0 10px 30px rgba(77,90,82,.08);margin-bottom:20px}
+.panel.active{display:block}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px}
+.stat{background:#fff;border-radius:14px;padding:20px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.05);border-top:3px solid #c9a961}
+.stat b{display:block;font-family:'Playfair Display',serif;font-size:2rem;color:#4d5a52}
+.stat span{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:#7a746c}
+input,select,textarea{width:100%;padding:12px 16px;border:1px solid #e8e0d1;border-radius:10px;font-family:inherit;font-size:.88rem;outline:none;margin-bottom:10px}
+input:focus{border-color:#c9a961}
+.btn{background:#7a8c7e;color:#f5f1ea;border:none;padding:11px 22px;border-radius:999px;font-weight:500;cursor:pointer;font-size:.82rem;letter-spacing:1px}
+.btn:hover{background:#4d5a52}
+.btn-gold{background:#c9a961;color:#4d5a52}
+.btn-gold:hover{background:#a08545}
+.btn-danger{background:#d46868;color:#fff}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.item{background:#faf7f1;border-left:4px solid #c9a961;border-radius:8px;padding:14px 18px;display:flex;justify-content:space-between;align-items:start;gap:10px;flex-wrap:wrap}
+.item b{color:#4d5a52;font-family:'Playfair Display',serif}
+.item small{display:block;color:#7a746c;font-size:.72rem;margin-top:4px}
+.item p{font-size:.85rem;margin-top:6px;font-style:italic;color:#2d2a26}
+.badge{font-size:.65rem;padding:3px 10px;border-radius:999px}
+.badge.yes{background:rgba(122,140,126,.18);color:#4d5a52}
+.badge.no{background:rgba(212,104,104,.15);color:#a04040}
+.link-box{background:#faf7f1;padding:12px;border-radius:8px;font-family:monospace;font-size:.78rem;word-break:break-all;margin:8px 0;color:#4d5a52;border:1px dashed #c9a961}
+.del-btn{background:none;border:none;color:#d46868;cursor:pointer;font-size:1rem}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(16px);background:#4d5a52;color:#f5f1ea;padding:12px 24px;border-radius:999px;font-size:.85rem;opacity:0;transition:.3s;z-index:9999;border:1px solid #c9a961}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.login{position:fixed;inset:0;background:linear-gradient(135deg,#7a8c7e,#4d5a52);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{max-width:380px;width:100%;background:#fff;border-radius:20px;padding:40px 30px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.15)}
+.login-card h2{font-family:'Playfair Display',serif;color:#4d5a52;margin-bottom:.6rem}
+</style>
+</head>
+<body>
+
+<div class="login" id="loginBox">
+    <div class="login-card">
+        <h2>🌿 Admin Panel</h2>
+        <p style="color:#7a746c;margin-bottom:1.5rem;font-size:.85rem">Wedding Hestiantina & Yuda</p>
+        <input type="password" id="passInput" placeholder="Kata sandi">
+        <button class="btn btn-gold" id="loginBtn" style="width:100%">Masuk</button>
+        <p style="font-size:.72rem;color:#7a746c;margin-top:1rem">Sandi: <b>admin123</b></p>
+    </div>
+</div>
+
+<div class="wrap hidden" id="adminPage">
+    <h1>🌿 Admin Wedding</h1>
+    <p class="sub">Panel Kelola Undangan</p>
+
+    <div class="stats">
+        <div class="stat"><b id="stTotal">0</b><span>Total Ucapan</span></div>
+        <div class="stat"><b id="stHadir">0</b><span>Hadir</span></div>
+        <div class="stat"><b id="stTidak">0</b><span>Berhalangan</span></div>
+        <div class="stat"><b id="stTamu">0</b><span>Total Tamu</span></div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-panel="ucapan">💌 Ucapan</button>
+        <button class="tab" data-panel="tamu">👥 Tamu & Link</button>
+        <button class="tab" data-panel="data">📥 Export</button>
+        <button class="btn btn-danger" id="logoutBtn" style="margin-left:auto">Keluar</button>
+    </div>
+
+    <section class="panel active" id="panel-ucapan">
+        <div class="row" style="justify-content:space-between;margin-bottom:14px">
+            <h2 style="font-family:'Playfair Display',serif;color:#4d5a52">Daftar Ucapan</h2>
+            <button class="btn btn-danger" id="clearWishes">Hapus Semua</button>
+        </div>
+        <div class="list" id="wishList"></div>
+    </section>
+
+    <section class="panel" id="panel-tamu">
+        <h2 style="font-family:'Playfair Display',serif;color:#4d5a52;margin-bottom:10px">Buat Link Tamu</h2>
+        <p style="color:#7a746c;font-size:.85rem;margin-bottom:14px">Tambah nama tamu → otomatis dapat link undangan personal.</p>
+        <div class="row">
+            <input type="text" id="guestInput" placeholder="Nama tamu (cth: Bapak Budi)" style="flex:1;min-width:200px;margin:0">
+            <button class="btn btn-gold" id="addGuest">+ Tambah</button>
+        </div>
+        <div class="list" id="guestList"></div>
+    </section>
+
+    <section class="panel" id="panel-data">
+        <h2 style="font-family:'Playfair Display',serif;color:#4d5a52;margin-bottom:14px">Export Data</h2>
+        <div class="row">
+            <button class="btn" id="exportJson">📥 Export JSON</button>
+            <button class="btn btn-gold" id="exportCsv">📄 Export CSV</button>
+        </div>
+    </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const WISH_KEY = 'weddingWishes';
+const GUEST_KEY = 'weddingGuests';
+const PASS_KEY = 'adminPass';
+
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2500)}
+const getPass = () => localStorage.getItem(PASS_KEY) || 'admin123';
+const getW = () => JSON.parse(localStorage.getItem(WISH_KEY)||'[]');
+const getG = () => JSON.parse(localStorage.getItem(GUEST_KEY)||'[]');
+async function copy(t){try{await navigator.clipboard.writeText(t);toast('Tersalin ✓')}catch{toast('Gagal ❌')}}
+const linkFor = n => new URL('index.html?to='+encodeURIComponent(n), location.href).href;
+
+/* LOGIN */
+function enter(){$('loginBox').style.display='none';$('adminPage').classList.remove('hidden');refresh()}
+if(sessionStorage.getItem('adm')==='1') enter();
+$('loginBtn').addEventListener('click',()=>{
+    if($('passInput').value===getPass()){sessionStorage.setItem('adm','1');enter();toast('Selamat datang ')}
+    else toast('Kata sandi salah ❌');
+});
+$('passInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click()});
+$('logoutBtn').addEventListener('click',()=>{sessionStorage.removeItem('adm');location.reload()});
+
+/* TABS */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    $('panel-'+t.dataset.panel).classList.add('active');
+}));
+
+/* RENDER */
+function refresh(){
+    const w=getW(), g=getG();
+    $('stTotal').textContent = w.length;
+    $('stHadir').textContent = w.filter(x=>x.attend==='Hadir').length;
+    $('stTidak').textContent = w.filter(x=>x.attend!=='Hadir').length;
+    $('stTamu').textContent = g.length;
+
+    const wl = $('wishList');
+    wl.innerHTML = w.length ? '' : '<p style="text-align:center;color:#7a746c;padding:20px">Belum ada ucapan 🌿</p>';
+    w.forEach((x,i)=>{
+        const d = document.createElement('div'); d.className='item';
+        d.innerHTML = `<div style="flex:1"><b>${esc(x.name)}</b> <span class="badge ${x.attend==='Hadir'?'yes':'no'}">${x.attend}</span>
+            <p>"${esc(x.msg)}"</p><small>${x.time}</small></div>
+            <button class="del-btn" data-del-w="${i}"><i class="fas fa-trash"></i></button>`;
+        wl.appendChild(d);
+    });
+
+    const gl = $('guestList');
+    gl.innerHTML = g.length ? '' : '<p style="text-align:center;color:#7a746c;padding:20px">Belum ada tamu</p>';
+    g.forEach((n,i)=>{
+        const link = linkFor(n);
+        const d = document.createElement('div'); d.className='item';
+        d.innerHTML = `<div style="flex:1"><b>${esc(n)}</b>
+            <div class="link-box">${link}</div></div>
+            <div class="row">
+                <button class="btn" data-copy="${link}">📋</button>
+                <button class="btn btn-gold" data-wa="${n}"><i class="fab fa-whatsapp"></i></button>
+                <button class="del-btn" data-del-g="${i}"><i class="fas fa-trash"></i></button>
+            </div>`;
+        gl.appendChild(d);
+    });
+}
+
+/* EVENTS */
+document.addEventListener('click',async e=>{
+    const dw = e.target.closest('[data-del-w]');
+    const dg = e.target.closest('[data-del-g]');
+    const cp = e.target.closest('[data-copy]');
+    const wa = e.target.closest('[data-wa]');
+    if(dw){const w=getW();w.splice(+dw.dataset.delW,1);localStorage.setItem(WISH_KEY,JSON.stringify(w));refresh();toast('Ucapan dihapus')}
+    if(dg){const g=getG();g.splice(+dg.dataset.delG,1);localStorage.setItem(GUEST_KEY,JSON.stringify(g));refresh();toast('Tamu dihapus')}
+    if(cp) await copy(cp.dataset.copy);
+    if(wa){
+        const n=wa.dataset.wa;
+        const link=linkFor(n);
+        const txt=`Assalamu'alaikum ${n} 🌿\n\nKami mengundang Bapak/Ibu/Saudara(i) hadir di pernikahan kami *Hestiantina & Yuda*, Minggu 25 Oktober 2026.\n\nDetail: ${link}`;
+        window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+    }
+});
+
+$('addGuest').addEventListener('click',()=>{
+    const n = $('guestInput').value.trim();
+    if(!n) return toast('Isi nama tamu dulu');
+    const g = getG();
+    if(g.includes(n)) return toast('Nama sudah ada');
+    g.push(n);
+    localStorage.setItem(GUEST_KEY,JSON.stringify(g));
+    $('guestInput').value='';
+    refresh();
+    toast('Tamu ditambahkan ✓');
+});
+$('guestInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('addGuest').click()});
+
+$('clearWishes').addEventListener('click',()=>{
+    if(confirm('Hapus semua ucapan?')){localStorage.setItem(WISH_KEY,'[]');refresh();toast('Semua dihapus')}
+});
+
+$('exportJson').addEventListener('click',()=>{
+    const data={wishes:getW(),guests:getG(),date:new Date().toISOString()};
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='data-wedding.json';a.click();toast('JSON terunduh ✓');
+});
+
+$('exportCsv').addEventListener('click',()=>{
+    const w=getW(); if(!w.length) return toast('Belum ada data');
+    const rows=[['Nama','Kehadiran','Ucapan','Waktu'],...w.map(x=>[x.name,x.attend,x.msg,x.time])];
+    const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='ucapan-wedding.csv';a.click();toast('CSV terunduh ✓');
+});
+</script>
+</body>
+</html>
